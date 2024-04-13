@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-sln:
-    runs-on: windows-2019
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -15,11 +15,11 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
         with:
           msbuild-architecture: x64
-          vs-version: 16.1
+          vs-version: 17.9
 
       - name: Build solution
         run: |
-          SET CL=-Wno-c++11-narrowing
+          SET CL="-Wno-c++11-narrowing /arch:AVX2 /favor:INTEL64 /O2"
           msbuild 'desmume/src/frontend/windows/DeSmuME.sln' /p:configuration="Release" /p:platform=x64 /p:CL_cgthreads=1 /p:CLToolExe=clang-cl.exe
           cmd /c desmume\src\frontend\windows\ci_postbuild.bat
 
