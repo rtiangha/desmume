@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2006-2016 DeSmuME team
+	Copyright (C) 2006-2024 DeSmuME team
 
 	This file is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ static HGLRC main_hRC;
 static HDC main_hDC;
 static HWND main_hWND;
 
-static bool _begin()
+bool wgl_beginOpenGL()
 {
 	//wglMakeCurrent is slow in some environments. so, check if the desired context is already current
 	if(wglGetCurrentContext() == main_hRC)
@@ -108,6 +108,11 @@ static bool _begin()
 		return false;
 
 	return true;
+}
+
+void wgl_endOpenGL()
+{
+	// Do nothing.
 }
 
 static bool makeBootstrapContext()
@@ -227,10 +232,8 @@ bool windows_opengl_init()
 	main_hDC = hdc;
 	main_hRC = hGlRc;
 	oglAlreadyInit = true;
-	oglrender_beginOpenGL = _begin;
-	
 	//use the new pbuffer context for further extension interrogation in shared opengl init
-	_begin();
+	wgl_beginOpenGL();
 
 	return true;
 }

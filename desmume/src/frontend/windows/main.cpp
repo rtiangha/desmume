@@ -1,6 +1,6 @@
-﻿/*
+/*
 	Copyright (C) 2006 Theo Berkau
-	Copyright (C) 2006-2023 DeSmuME team
+	Copyright (C) 2006-2024 DeSmuME team
 
 	This file is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@
 #include "slot2.h"
 #include "GPU.h"
 #include "SPU.h"
-#include "OGLRender.h"
 #include "OGLRender_3_2.h"
 #include "rasterize.h"
 #include "gfx3d.h"
@@ -1956,8 +1955,9 @@ int _main()
 
 //	struct configured_features my_config;
 
-	oglrender_init = windows_opengl_init;
-
+	oglrender_init = &windows_opengl_init;
+	oglrender_beginOpenGL = &wgl_beginOpenGL;
+	oglrender_endOpenGL = &wgl_endOpenGL;
 
 	//try and detect this for users who don't specify it on the commandline
 	//(can't say I really blame them)
@@ -3442,7 +3442,7 @@ void ScreenshotToClipboard(bool extraInfo)
 	else
 	{
 		u32* swapbuf = (u32*)malloc_alignedPage(width*height * 4);
-		ColorspaceConvertBuffer888XTo8888Opaque<true, false>((const u32*)dispInfo.masterCustomBuffer, swapbuf, width * height);
+		ColorspaceConvertBuffer888xTo8888Opaque<true, false>((const u32*)dispInfo.masterCustomBuffer, swapbuf, width * height);
 
 		SetDIBitsToDevice(hMemDC, 0, 0, width, height, 0, 0, 0, height, swapbuf, (BITMAPINFO*)&bmi, DIB_RGB_COLORS);
 
